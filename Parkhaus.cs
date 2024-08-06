@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-
-namespace Tiefgarage
+﻿namespace Tiefgarage
 {
     public class Parkhaus
     {
@@ -20,7 +12,7 @@ namespace Tiefgarage
             //Check at Least One Level with at Least one Spot
             foreach (List<Tuple<uint, FahrzeugTyp>> anzahlenUndTypen in anzahlenUndTypenProEtage)
             {
-                Parketage neueEtage = Parketage(anzahlenUndTypen, this);
+                Parketage neueEtage = new Parketage(anzahlenUndTypen, this);
                 parketagen.Add(neueEtage);
             }
         }
@@ -30,7 +22,7 @@ namespace Tiefgarage
             if (pFahrzeug is null) return false;
             if (pFahrzeug.GibParkhaus() == this) return false; // Nicht zweimal Reinfahren
 
-            if(!ErmittleFreienPlatz(pFahrzeug.GibTyp(), out Parkbucht freierPlatz))
+            if(!ErmittleFreienPlatz(pFahrzeug.GibTyp(), out Parkbucht? freierPlatz))
             {
                 Console.WriteLine($"Es ist kein Platz mehr im Parkhaus {this}");
                 return false;
@@ -44,9 +36,9 @@ namespace Tiefgarage
         {
             if (pFahrzeug == null) return;
             
-            if(GibPlatzVonFahrzeug(pFahrzeug, out Parkbucht parkbucht)) // gefunden
+            if(GibPlatzVonFahrzeug(pFahrzeug, out Parkbucht? parkbucht)) // gefunden
             {
-                parkbucht.entferneFahrzeug();
+                parkbucht.EntferneFahrzeug();
                 pFahrzeug.ParkhausVerlassen();
                 return;
             }
@@ -54,7 +46,7 @@ namespace Tiefgarage
             Console.WriteLine($"Fahrzeug {pFahrzeug} konnte das Parkhaus {this} nicht verlasse, es befand sich nie darin.");
         }
 
-        public bool GibPlatzVonFahrzeug(Fahrzeug pFahrzeug, out Parkbucht parkbucht)
+        public bool GibPlatzVonFahrzeug(Fahrzeug pFahrzeug, out Parkbucht? parkbucht)
         {
             foreach(Parketage etage in parketagen)
             {
@@ -68,19 +60,19 @@ namespace Tiefgarage
             return false;
         }
 
-        public uint GibAnzahlFreierPlaetze()
+        public uint GibAnzahlPlaetze(bool mitBesetzten = false)
         {
             uint sum = 0;
 
             foreach(Parketage etage in parketagen)
             {
-                sum += etage.GibAnzahlFreierPlaetze();
+                sum += etage.GibAnzahlPlaetze(mitBesetzten);
             }
 
             return sum;
         }
 
-        private bool ErmittleFreienPlatz(FahrzeugTyp typ, out Parkbucht parkbucht)
+        private bool ErmittleFreienPlatz(FahrzeugTyp typ, out Parkbucht? parkbucht)
         {
             foreach(Parketage etage in parketagen)
             {
@@ -93,6 +85,9 @@ namespace Tiefgarage
             parkbucht = null;
             return false;
         }
+
+        public override string ToString() =>
+            $"Parkhaus mit {parketagen.Count} Etage(n) mit insgesamt {GibAnzahlPlaetze(true)} Plätzen";
     }
 
     public class Parketage
@@ -116,6 +111,87 @@ namespace Tiefgarage
             }
 
             meinParkhaus = pParkhaus;
+        }
+
+        public  bool HatFreienPlatz(FahrzeugTyp typ, out Parkbucht? parkbucht)
+        {
+            foreach(Parkbucht bucht in parkbuchten)
+            {
+                if (typ != bucht.GibTyp()) continue;
+                if (!bucht.HatFreienPlatz(out _)) continue;
+                
+                parkbucht = bucht;
+                return true;
+            }
+
+            parkbucht = null;
+            return false;
+        }
+
+        public bool GibPlatzVonFahrzeug(Fahrzeug fahrzeug, out Parkbucht? parkbucht)
+        {
+            foreach(Parkbucht bucht in parkbuchten)
+            {
+                if (bucht.HatFreienPlatz(out Fahrzeug? geparktesFahrzeug)) continue;
+                if (geparktesFahrzeug != fahrzeug) continue;
+                
+                parkbucht = bucht;
+                return true;
+            }
+
+            parkbucht = null;
+            return false;
+        }
+
+        public uint GibAnzahlPlaetze(bool mitBesetzen = false)
+        {
+            if (mitBesetzen) return (uint) parkbuchten.Count;
+            return parkbuchten.Aggregate(0u, (c, bucht) => bucht.HatFreienPlatz(out _) ? c + 1 : c);
+        }
+
+        public override string ToString() =>
+            $"Etage im Parkhaus ({meinParkhaus}) mit Insgesamt {GibAnzahlPlaetze(true)} Plätzen";
+    }
+
+    public class Parkbucht
+    {
+        private Parketage etage; // readonly
+        private FahrzeugTyp typ; // readonly
+        private Fahrzeug? geparktesFahrzeug;
+
+
+        public Parkbucht(FahrzeugTyp pTyp, Parketage pEtage)
+        {
+            etage = pEtage;
+            typ = pTyp;
+        }
+
+        public void ParkeFahrzeug(Fahrzeug pFahrzeug)
+        {
+            if (pFahrzeug.GibTyp() != typ) throw new ArgumentException($"Ein Fahrzeug vom Typ {pFahrzeug.GibTyp()} kann nicht in die Parklücke {this}");
+            if (geparktesFahrzeug != null) throw new ArgumentException($"Die Parkbucht {this} hat keinen Platz für das Fahrzeug {pFahrzeug}. Es ist von {geparktesFahrzeug} belegt.");
+
+            geparktesFahrzeug = pFahrzeug;
+        }
+
+        public Fahrzeug? EntferneFahrzeug()
+        {
+            Fahrzeug? tmp = geparktesFahrzeug;
+            geparktesFahrzeug = null;
+            return tmp;
+        }
+
+        public bool HatFreienPlatz(out Fahrzeug? pFahrzeug)
+        {
+            pFahrzeug = geparktesFahrzeug;
+            return geparktesFahrzeug == null;
+        }
+
+        public FahrzeugTyp GibTyp() => typ;
+
+        public override string ToString()
+        {
+            return $"Parkbucht im Parkhaus in der Etage ({etage})";
         }
     }
 }

@@ -28,12 +28,46 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            label1 = new Label();
+            btnCreate = new Button();
+            SuspendLayout();
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 27.75F, FontStyle.Regular, GraphicsUnit.Point);
+            label1.Location = new Point(308, 68);
+            label1.Name = "label1";
+            label1.Size = new Size(169, 50);
+            label1.TabIndex = 0;
+            label1.Text = "Parkhaus";
+            // 
+            // btnCreate
+            // 
+            btnCreate.Location = new Point(85, 271);
+            btnCreate.Name = "btnCreate";
+            btnCreate.Size = new Size(89, 60);
+            btnCreate.TabIndex = 1;
+            btnCreate.Text = "Ein Neues Parkhaus erstellen";
+            btnCreate.UseVisualStyleBackColor = true;
+            btnCreate.Click += btnCreate_Click;
+            // 
+            // Main
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnCreate);
+            Controls.Add(label1);
+            Name = "Main";
             Text = "Form1";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private Label label1;
+        private Button btnCreate;
     }
 }

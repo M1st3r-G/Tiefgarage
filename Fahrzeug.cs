@@ -25,7 +25,7 @@
         public void ParkhausVerlassen()
         {
             if (meinParkhaus is null) return;
-            meinParkhaus.fahrzeugEntfernen(this);
+            meinParkhaus.FahrzeugEntfernen(this);
             meinParkhaus = null;
         }
 
