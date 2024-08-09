@@ -32,11 +32,12 @@
             btnAddLevel = new Button();
             label1 = new Label();
             tbxName = new TextBox();
+            LevelContainer = new Panel();
             SuspendLayout();
             // 
             // btnAcceptCreate
             // 
-            btnAcceptCreate.Location = new Point(374, 599);
+            btnAcceptCreate.Location = new Point(418, 599);
             btnAcceptCreate.Name = "btnAcceptCreate";
             btnAcceptCreate.Size = new Size(136, 44);
             btnAcceptCreate.TabIndex = 1;
@@ -46,7 +47,7 @@
             // 
             // btnAddLevel
             // 
-            btnAddLevel.Location = new Point(374, 65);
+            btnAddLevel.Location = new Point(418, 65);
             btnAddLevel.Name = "btnAddLevel";
             btnAddLevel.Size = new Size(135, 45);
             btnAddLevel.TabIndex = 2;
@@ -57,7 +58,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(374, 9);
+            label1.Location = new Point(418, 9);
             label1.Name = "label1";
             label1.Size = new Size(93, 15);
             label1.TabIndex = 3;
@@ -65,17 +66,26 @@
             // 
             // tbxName
             // 
-            tbxName.Location = new Point(375, 27);
+            tbxName.Location = new Point(419, 27);
             tbxName.Name = "tbxName";
             tbxName.PlaceholderText = "Unbenanntes Parkhaus";
             tbxName.Size = new Size(135, 23);
             tbxName.TabIndex = 4;
             // 
+            // LevelContainer
+            // 
+            LevelContainer.AutoScroll = true;
+            LevelContainer.Location = new Point(12, 12);
+            LevelContainer.Name = "LevelContainer";
+            LevelContainer.Size = new Size(383, 631);
+            LevelContainer.TabIndex = 5;
+            // 
             // CreateMenu
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(522, 655);
+            ClientSize = new Size(577, 655);
+            Controls.Add(LevelContainer);
             Controls.Add(tbxName);
             Controls.Add(label1);
             Controls.Add(btnAddLevel);
@@ -91,5 +101,6 @@
         private Button btnAddLevel;
         private Label label1;
         private TextBox tbxName;
+        private Panel LevelContainer;
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Drawing.Design;
 
 namespace Tiefgarage
 {
@@ -9,7 +11,8 @@ namespace Tiefgarage
         public CreateMenu()
         {
             InitializeComponent();
-            Etagen.Add(new LevelGeneratorUI(this, new Point(15, 0), 0));
+            LevelGeneratorUI.OnSizeChange += OnLevelSizeChange;
+            AddLevel();
         }
 
         private void btnAcceptCreate_Click(object sender, EventArgs e)
@@ -39,10 +42,40 @@ namespace Tiefgarage
             Close();
         }
 
-        private void btnAddLevel_Click(object sender, EventArgs e)
+        private void btnAddLevel_Click(object sender, EventArgs e) => AddLevel();
+
+        private void AddLevel()
         {
             int currentLength = Etagen.Aggregate(0, (c, lvl) => c + lvl.GetSize().Height);
-            Etagen.Add(new LevelGeneratorUI(this, new Point(15, currentLength), Etagen.Count));
+            
+            int currentScroll = LevelContainer.VerticalScroll.Value;
+            LevelContainer.VerticalScroll.Value = 0;
+
+            LevelGeneratorUI newLevel = new(LevelContainer, new Point(15, currentLength), Etagen.Count);
+            Etagen.Add(newLevel);
+
+            if (currentScroll != 0) LevelContainer.VerticalScroll.Value = currentScroll + newLevel.GetSize().Height;
+        }
+
+        private void OnLevelSizeChange(LevelGeneratorUI changedUI)
+        {
+            int index = Etagen.IndexOf(changedUI);
+            if (index == -1 || index == Etagen.Count - 1) return;
+
+            Debug.WriteLine("Changing the Height");
+            int currentScroll = LevelContainer.VerticalScroll.Value;
+            LevelContainer.VerticalScroll.Value = 0;
+
+            int currentLength = 0;
+            for(int i = 0; i < Etagen.Count; i++)
+            {
+                Point newPos = new(15, currentLength);
+                Debug.WriteLine($"{i}: {newPos}");
+                Etagen[i].SetPosition(newPos);
+                currentLength += Etagen[i].GetSize().Height;
+            }
+
+            LevelContainer.VerticalScroll.Value = currentScroll;
         }
     }
 
@@ -52,7 +85,9 @@ namespace Tiefgarage
         private readonly Button button;
         private readonly GroupBox group;
 
-        public LevelGeneratorUI(Form form, Point position, int idx)
+        public static Action<LevelGeneratorUI>? OnSizeChange;
+
+        public LevelGeneratorUI(Control container, Point position, int idx)
         {
             button = new Button
             {
@@ -74,7 +109,7 @@ namespace Tiefgarage
             AddRow();
 
             group.Controls.Add(button);
-            form.Controls.Add(group);
+            container.Controls.Add(group);
         }
 
         public void AddRow()
@@ -84,12 +119,12 @@ namespace Tiefgarage
             Point position = new(10, rows.Count * 30);
             rows.Add(new SettingsRow(group, position));
 
-            // Update Size
+            OnSizeChange?.Invoke(this);
         }
 
         public List<Tuple<uint, FahrzeugTyp>> GetData() =>
             rows.Select(r => r.GetData()).ToList();
-
+        public void SetPosition(Point position) => group.Location = position;
         public Size GetSize() => group.Size;
 
         private class SettingsRow
@@ -97,7 +132,7 @@ namespace Tiefgarage
             private readonly NumericUpDown number;
             private readonly ComboBox dropdown;
 
-            public SettingsRow(GroupBox group, Point position)
+            public SettingsRow(Control group, Point position)
             {
                 number = new NumericUpDown
                 {
