@@ -60,8 +60,8 @@ namespace Tiefgarage
 
         private void btnAddCar_Click(object sender, EventArgs e)
         {
-            cbbxCars.Items.Add(new Auto(FahrzeugUtils.gibFreieId()));
-            cbbxCars.Items.Add(new Motorrad(FahrzeugUtils.gibFreieId()));
+            cbbxCars.Items.Add(new Auto(FahrzeugUtils.GibFreieId()));
+            cbbxCars.Items.Add(new Motorrad(FahrzeugUtils.GibFreieId()));
         }
 
         private void btnRemoveCar_Click(object sender, EventArgs e)

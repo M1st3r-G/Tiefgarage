@@ -3,7 +3,7 @@
     public static class FahrzeugUtils
     {
         private static int letzteVergebeneId = 0;
-        public static string gibFreieId()
+        public static string GibFreieId()
         {
             letzteVergebeneId++;
             return (letzteVergebeneId - 1).ToString();
