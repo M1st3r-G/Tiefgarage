@@ -30,7 +30,8 @@
         {
             label1 = new Label();
             btnCreate = new Button();
-            folderBrowserDialog1 = new FolderBrowserDialog();
+            label2 = new Label();
+            fileContainer = new FlowLayoutPanel();
             SuspendLayout();
             // 
             // label1
@@ -53,11 +54,31 @@
             btnCreate.UseVisualStyleBackColor = true;
             btnCreate.Click += btnCreate_Click;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(450, 124);
+            label2.Name = "label2";
+            label2.Size = new Size(93, 15);
+            label2.TabIndex = 0;
+            label2.Text = "Parkhaus öffnen";
+            // 
+            // fileContainer
+            // 
+            fileContainer.AutoScroll = true;
+            fileContainer.BorderStyle = BorderStyle.FixedSingle;
+            fileContainer.Location = new Point(450, 150);
+            fileContainer.Name = "fileContainer";
+            fileContainer.Size = new Size(150, 150);
+            fileContainer.TabIndex = 2;
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(618, 315);
+            Controls.Add(label2);
+            Controls.Add(fileContainer);
             Controls.Add(btnCreate);
             Controls.Add(label1);
             Name = "Main";
@@ -70,6 +91,7 @@
 
         private Label label1;
         private Button btnCreate;
-        private FolderBrowserDialog folderBrowserDialog1;
+        private Label label2;
+        private FlowLayoutPanel fileContainer;
     }
 }

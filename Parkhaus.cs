@@ -5,7 +5,13 @@ namespace Tiefgarage
     public class Parkhaus
     {
         [JsonProperty] private List<Parketage> parketagen;
-        
+
+        [JsonConstructor]
+        public Parkhaus(List<Parketage> pParketagen)
+        {
+            parketagen = pParketagen;
+        }
+
         public Parkhaus(List<List<Tuple<uint, FahrzeugTyp>>> anzahlenUndTypenProEtage) 
         {
             parketagen = new List<Parketage>();
@@ -14,7 +20,7 @@ namespace Tiefgarage
             //Check at Least One Level with at Least one Spot
             foreach (List<Tuple<uint, FahrzeugTyp>> anzahlenUndTypen in anzahlenUndTypenProEtage)
             {
-                Parketage neueEtage = new Parketage(anzahlenUndTypen, this);
+                Parketage neueEtage = new(anzahlenUndTypen);
                 parketagen.Add(neueEtage);
             }
         }
@@ -76,6 +82,8 @@ namespace Tiefgarage
             return sum;
         }
 
+        public List<Parketage> GibParketagen() => parketagen;
+
         private bool ErmittleFreienPlatz(FahrzeugTyp typ, out Parkbucht? parkbucht)
         {
             foreach(Parketage etage in parketagen)
@@ -98,7 +106,13 @@ namespace Tiefgarage
     {
         [JsonProperty]  private List<Parkbucht> parkbuchten;
 
-        public Parketage(List<Tuple<uint, FahrzeugTyp>> anzahlenUndTypen, Parkhaus pParkhaus)
+        [JsonConstructor]
+        public Parketage(List<Parkbucht> pParkbuchten)
+        {
+            parkbuchten = pParkbuchten;
+        }
+
+        public Parketage(List<Tuple<uint, FahrzeugTyp>> anzahlenUndTypen)
         {
             if(anzahlenUndTypen is null || anzahlenUndTypen.Count == 0) throw new ArgumentException("Der Veruch ein Parkbuchtenlose Etage zu erstellen, wurde unterbrochen.");
 
@@ -151,6 +165,8 @@ namespace Tiefgarage
             if (mitBesetzen) return (uint) parkbuchten.Count;
             return parkbuchten.Aggregate(0u, (c, bucht) => bucht.HatFreienPlatz(out _) ? c + 1 : c);
         }
+
+        public List<Parkbucht> GibParkbuchten() => parkbuchten;
     }
 
     public class Parkbucht

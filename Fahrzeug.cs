@@ -31,6 +31,11 @@
 
         public Parkhaus? GibParkhaus() => meinParkhaus;
         public FahrzeugTyp GibTyp() => typ;
+
+        public override string ToString()
+        {
+            return id;
+        }
     }
 
     public class Motorrad: Fahrzeug
@@ -39,6 +44,7 @@
         {
             typ = FahrzeugTyp.Motorrad;
         }
+        public override string ToString() { return "M-" + base.ToString(); }
     }
 
     public class Auto: Fahrzeug
@@ -47,5 +53,7 @@
         {
             typ = FahrzeugTyp.Auto;
         }
+
+        public override string ToString() { return "A-" + base.ToString(); }
     }
 }

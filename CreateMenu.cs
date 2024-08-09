@@ -20,7 +20,7 @@ namespace Tiefgarage
 
             string fileName = (tbxName.Text is "" ? "Unbenanntes Parkhaus" : tbxName.Text);
 
-            if (File.Exists(fileName + ".parkhaus"))
+            if (File.Exists(Main.savePath + fileName + ".parkhaus"))
             {
                 if (MessageBox.Show($"Es existiert bereits ein Parkhaus mit dem Namen: {fileName}\nWillst du es überschreiben?",
                     "Achtung", MessageBoxButtons.YesNo) == DialogResult.No) return;
@@ -35,7 +35,7 @@ namespace Tiefgarage
 
             Parkhaus meinParkhaus = new(fuerJedeEtage);
 
-            File.WriteAllText(fileName + ".parkhaus", JsonConvert.SerializeObject(meinParkhaus, Formatting.Indented));
+            File.WriteAllText(Main.savePath + fileName + ".parkhaus", JsonConvert.SerializeObject(meinParkhaus, Formatting.Indented));
             MessageBox.Show($"Es wurde erfolgreich ein {meinParkhaus} erstellt.", "Erfolg", MessageBoxButtons.OK);
             allowClose = true;
             Close();
