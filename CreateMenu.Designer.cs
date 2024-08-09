@@ -32,7 +32,7 @@
             btnAddLevel = new Button();
             label1 = new Label();
             tbxName = new TextBox();
-            LevelContainer = new Panel();
+            levelContainer = new FlowLayoutPanel();
             SuspendLayout();
             // 
             // btnAcceptCreate
@@ -72,26 +72,29 @@
             tbxName.Size = new Size(135, 23);
             tbxName.TabIndex = 4;
             // 
-            // LevelContainer
+            // levelContainer
             // 
-            LevelContainer.AutoScroll = true;
-            LevelContainer.Location = new Point(12, 12);
-            LevelContainer.Name = "LevelContainer";
-            LevelContainer.Size = new Size(383, 631);
-            LevelContainer.TabIndex = 5;
+            levelContainer.AutoScroll = true;
+            levelContainer.FlowDirection = FlowDirection.TopDown;
+            levelContainer.Location = new Point(12, 9);
+            levelContainer.Name = "levelContainer";
+            levelContainer.Size = new Size(380, 634);
+            levelContainer.TabIndex = 0;
+            levelContainer.WrapContents = false;
             // 
             // CreateMenu
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(577, 655);
-            Controls.Add(LevelContainer);
+            Controls.Add(levelContainer);
             Controls.Add(tbxName);
             Controls.Add(label1);
             Controls.Add(btnAddLevel);
             Controls.Add(btnAcceptCreate);
             Name = "CreateMenu";
             Text = "Create Menu";
+            Load += CreateMenu_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -101,6 +104,6 @@
         private Button btnAddLevel;
         private Label label1;
         private TextBox tbxName;
-        private Panel LevelContainer;
+        private FlowLayoutPanel levelContainer;
     }
 }
