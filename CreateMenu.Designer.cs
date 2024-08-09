@@ -30,11 +30,13 @@
         {
             btnAcceptCreate = new Button();
             btnAddLevel = new Button();
+            label1 = new Label();
+            tbxName = new TextBox();
             SuspendLayout();
             // 
             // btnAcceptCreate
             // 
-            btnAcceptCreate.Location = new Point(626, 369);
+            btnAcceptCreate.Location = new Point(374, 599);
             btnAcceptCreate.Name = "btnAcceptCreate";
             btnAcceptCreate.Size = new Size(136, 44);
             btnAcceptCreate.TabIndex = 1;
@@ -44,7 +46,7 @@
             // 
             // btnAddLevel
             // 
-            btnAddLevel.Location = new Point(626, 309);
+            btnAddLevel.Location = new Point(374, 65);
             btnAddLevel.Name = "btnAddLevel";
             btnAddLevel.Size = new Size(135, 45);
             btnAddLevel.TabIndex = 2;
@@ -52,20 +54,42 @@
             btnAddLevel.UseVisualStyleBackColor = true;
             btnAddLevel.Click += btnAddLevel_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(374, 9);
+            label1.Name = "label1";
+            label1.Size = new Size(93, 15);
+            label1.TabIndex = 3;
+            label1.Text = "Parkhaus Name:";
+            // 
+            // tbxName
+            // 
+            tbxName.Location = new Point(375, 27);
+            tbxName.Name = "tbxName";
+            tbxName.PlaceholderText = "Unbenanntes Parkhaus";
+            tbxName.Size = new Size(135, 23);
+            tbxName.TabIndex = 4;
+            // 
             // CreateMenu
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(522, 655);
+            Controls.Add(tbxName);
+            Controls.Add(label1);
             Controls.Add(btnAddLevel);
             Controls.Add(btnAcceptCreate);
             Name = "CreateMenu";
             Text = "Create Menu";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
         private Button btnAcceptCreate;
         private Button btnAddLevel;
+        private Label label1;
+        private TextBox tbxName;
     }
 }

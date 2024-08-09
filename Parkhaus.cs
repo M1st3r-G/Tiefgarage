@@ -1,8 +1,10 @@
-﻿namespace Tiefgarage
+﻿using Newtonsoft.Json;
+
+namespace Tiefgarage
 {
     public class Parkhaus
     {
-        private List<Parketage> parketagen;
+        [JsonProperty] private List<Parketage> parketagen;
         
         public Parkhaus(List<List<Tuple<uint, FahrzeugTyp>>> anzahlenUndTypenProEtage) 
         {
@@ -36,7 +38,7 @@
         {
             if (pFahrzeug == null) return;
             
-            if(GibPlatzVonFahrzeug(pFahrzeug, out Parkbucht? parkbucht)) // gefunden
+            if(GibPlatzVonFahrzeug(pFahrzeug, out Parkbucht? parkbucht, out _)) // gefunden
             {
                 parkbucht.EntferneFahrzeug();
                 pFahrzeug.ParkhausVerlassen();
@@ -46,17 +48,19 @@
             Console.WriteLine($"Fahrzeug {pFahrzeug} konnte das Parkhaus {this} nicht verlasse, es befand sich nie darin.");
         }
 
-        public bool GibPlatzVonFahrzeug(Fahrzeug pFahrzeug, out Parkbucht? parkbucht)
+        public bool GibPlatzVonFahrzeug(Fahrzeug pFahrzeug, out Parkbucht? parkbucht, out Point? position)
         {
             foreach(Parketage etage in parketagen)
             {
-                if(etage.GibPlatzVonFahrzeug(pFahrzeug, out parkbucht)) // gefunden
+                if(etage.GibPlatzVonFahrzeug(pFahrzeug, out parkbucht, out int buchtNummer)) // gefunden
                 {
+                    position = new(parketagen.IndexOf(etage), buchtNummer);
                     return true;
                 }
             }
 
             parkbucht = null;
+            position = new(-1, -1);
             return false;
         }
 
@@ -92,8 +96,7 @@
 
     public class Parketage
     {
-        private Parkhaus meinParkhaus;
-        private List<Parkbucht> parkbuchten;
+        [JsonProperty]  private List<Parkbucht> parkbuchten;
 
         public Parketage(List<Tuple<uint, FahrzeugTyp>> anzahlenUndTypen, Parkhaus pParkhaus)
         {
@@ -105,12 +108,10 @@
             {
                 for(int i = 0; i < anzahlUndTyp.Item1; i++)
                 {
-                    Parkbucht neueParkbucht = new Parkbucht(anzahlUndTyp.Item2, this);
+                    Parkbucht neueParkbucht = new(anzahlUndTyp.Item2);
                     parkbuchten.Add(neueParkbucht);
                 }
             }
-
-            meinParkhaus = pParkhaus;
         }
 
         public  bool HatFreienPlatz(FahrzeugTyp typ, out Parkbucht? parkbucht)
@@ -128,7 +129,7 @@
             return false;
         }
 
-        public bool GibPlatzVonFahrzeug(Fahrzeug fahrzeug, out Parkbucht? parkbucht)
+        public bool GibPlatzVonFahrzeug(Fahrzeug fahrzeug, out Parkbucht? parkbucht, out int buchtNummer)
         {
             foreach(Parkbucht bucht in parkbuchten)
             {
@@ -136,10 +137,12 @@
                 if (geparktesFahrzeug != fahrzeug) continue;
                 
                 parkbucht = bucht;
+                buchtNummer = parkbuchten.IndexOf(bucht);
                 return true;
             }
 
             parkbucht = null;
+            buchtNummer = -1;
             return false;
         }
 
@@ -148,21 +151,16 @@
             if (mitBesetzen) return (uint) parkbuchten.Count;
             return parkbuchten.Aggregate(0u, (c, bucht) => bucht.HatFreienPlatz(out _) ? c + 1 : c);
         }
-
-        public override string ToString() =>
-            $"Etage im Parkhaus ({meinParkhaus}) mit Insgesamt {GibAnzahlPlaetze(true)} Plätzen";
     }
 
     public class Parkbucht
     {
-        private Parketage etage; // readonly
-        private FahrzeugTyp typ; // readonly
+        [JsonProperty] private FahrzeugTyp typ; // readonly
         private Fahrzeug? geparktesFahrzeug;
 
 
-        public Parkbucht(FahrzeugTyp pTyp, Parketage pEtage)
+        public Parkbucht(FahrzeugTyp pTyp)
         {
-            etage = pEtage;
             typ = pTyp;
         }
 
@@ -188,10 +186,5 @@
         }
 
         public FahrzeugTyp GibTyp() => typ;
-
-        public override string ToString()
-        {
-            return $"Parkbucht im Parkhaus in der Etage ({etage})";
-        }
     }
 }
