@@ -94,7 +94,7 @@
             Controls.Add(btnAcceptCreate);
             Name = "CreateMenu";
             Text = "Create Menu";
-            Load += CreateMenu_Load;
+            FormClosing += CreateMenu_FormClosing;
             ResumeLayout(false);
             PerformLayout();
         }

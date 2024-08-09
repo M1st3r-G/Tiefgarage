@@ -5,6 +5,7 @@ namespace Tiefgarage
     public partial class CreateMenu : Form
     {
         private readonly List<LevelGeneratorUI> Etagen = new();
+        private bool allowClose = false;
 
         public CreateMenu()
         {
@@ -36,6 +37,7 @@ namespace Tiefgarage
 
             File.WriteAllText(fileName + ".parkhaus", JsonConvert.SerializeObject(meinParkhaus, Formatting.Indented));
             MessageBox.Show($"Es wurde erfolgreich ein {meinParkhaus} erstellt.", "Erfolg", MessageBoxButtons.OK);
+            allowClose = true;
             Close();
         }
 
@@ -47,9 +49,12 @@ namespace Tiefgarage
             Etagen.Add(new(levelContainer, new Point(15, currentLength), Etagen.Count));
         }
 
-        private void CreateMenu_Load(object sender, EventArgs e)
+        private void CreateMenu_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (allowClose) return;
 
+            if (MessageBox.Show("Nicht gespeicherte Daten können verloren gehen",
+                "Sicher?", MessageBoxButtons.YesNo) == DialogResult.No) e.Cancel = true;
         }
     }
 
