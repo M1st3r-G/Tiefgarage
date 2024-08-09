@@ -5,11 +5,19 @@ namespace Tiefgarage
         public Main()
         {
             InitializeComponent();
+            RefreshList();
         }
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
-            new CreateMenu().Show();
+            CreateMenu createMenu = new();
+            createMenu.FormClosed += (_, _) => RefreshList();
+            createMenu.Show();
+        }
+
+        private void RefreshList()
+        {
+
         }
     }
 }
