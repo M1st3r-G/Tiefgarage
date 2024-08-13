@@ -111,8 +111,8 @@ namespace Tiefgarage
             {
                 number = new NumericUpDown
                 {
-                    Maximum = 500,
-                    Value = 100,
+                    Maximum = 300,
+                    Value = 50,
                     Minimum = 1,
                     Size = new Size(100, 50),
                     Location = new Point(position.X, position.Y + 25),
