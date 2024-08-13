@@ -30,15 +30,17 @@
         {
             label1 = new Label();
             btnCreate = new Button();
-            label2 = new Label();
-            fileContainer = new FlowLayoutPanel();
+            btnOpen = new Button();
+            btnDelete = new Button();
+            btnEdit = new Button();
+            cbbxSaved = new ComboBox();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 27.75F, FontStyle.Regular, GraphicsUnit.Point);
-            label1.Location = new Point(214, 9);
+            label1.Location = new Point(12, 9);
             label1.Name = "label1";
             label1.Size = new Size(169, 50);
             label1.TabIndex = 0;
@@ -46,39 +48,62 @@
             // 
             // btnCreate
             // 
-            btnCreate.Location = new Point(12, 243);
+            btnCreate.Location = new Point(12, 227);
             btnCreate.Name = "btnCreate";
-            btnCreate.Size = new Size(89, 60);
+            btnCreate.Size = new Size(169, 29);
             btnCreate.TabIndex = 1;
             btnCreate.Text = "Ein Neues Parkhaus erstellen";
             btnCreate.UseVisualStyleBackColor = true;
             btnCreate.Click += btnCreate_Click;
             // 
-            // label2
+            // btnOpen
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(450, 124);
-            label2.Name = "label2";
-            label2.Size = new Size(93, 15);
-            label2.TabIndex = 0;
-            label2.Text = "Parkhaus öffnen";
+            btnOpen.Location = new Point(201, 62);
+            btnOpen.Name = "btnOpen";
+            btnOpen.Size = new Size(126, 23);
+            btnOpen.TabIndex = 3;
+            btnOpen.Text = "Parkhaus öffnen";
+            btnOpen.UseVisualStyleBackColor = true;
+            btnOpen.Click += btnOpen_Click;
             // 
-            // fileContainer
+            // btnDelete
             // 
-            fileContainer.AutoScroll = true;
-            fileContainer.BorderStyle = BorderStyle.FixedSingle;
-            fileContainer.Location = new Point(450, 150);
-            fileContainer.Name = "fileContainer";
-            fileContainer.Size = new Size(150, 150);
-            fileContainer.TabIndex = 2;
+            btnDelete.Location = new Point(201, 127);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(126, 23);
+            btnDelete.TabIndex = 4;
+            btnDelete.Text = "Parkhaus löschen";
+            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
+            // 
+            // btnEdit
+            // 
+            btnEdit.Location = new Point(201, 189);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(126, 23);
+            btnEdit.TabIndex = 5;
+            btnEdit.Text = "Parkhaus bearbeiten";
+            btnEdit.UseVisualStyleBackColor = true;
+            btnEdit.Click += btnEdit_Click;
+            // 
+            // cbbxSaved
+            // 
+            cbbxSaved.DropDownStyle = ComboBoxStyle.Simple;
+            cbbxSaved.FormattingEnabled = true;
+            cbbxSaved.Location = new Point(12, 62);
+            cbbxSaved.Name = "cbbxSaved";
+            cbbxSaved.Size = new Size(169, 150);
+            cbbxSaved.TabIndex = 6;
             // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(618, 315);
-            Controls.Add(label2);
-            Controls.Add(fileContainer);
+            ClientSize = new Size(342, 270);
+            Controls.Add(cbbxSaved);
+            Controls.Add(btnEdit);
+            Controls.Add(btnDelete);
+            Controls.Add(btnOpen);
             Controls.Add(btnCreate);
             Controls.Add(label1);
             Name = "Main";
@@ -91,7 +116,9 @@
 
         private Label label1;
         private Button btnCreate;
-        private Label label2;
-        private FlowLayoutPanel fileContainer;
+        private Button btnOpen;
+        private Button btnDelete;
+        private Button btnEdit;
+        private ComboBox cbbxSaved;
     }
 }

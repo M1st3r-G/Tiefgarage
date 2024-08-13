@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Tiefgarage
 {
     public partial class Main : Form
@@ -15,34 +13,66 @@ namespace Tiefgarage
         private void btnCreate_Click(object sender, EventArgs e)
         {
             CreateMenu createMenu = new();
-            createMenu.FormClosed += (_, _) => RefreshList();
-            createMenu.Show();
+            createMenu.ShowDialog();
+            RefreshList();
         }
 
         private void RefreshList()
         {
-            fileContainer.Controls.Clear();
+            cbbxSaved.Items.Clear();
             foreach (string path in Directory.GetFiles(savePath, "*"))
             {
-                Button newButton = new()
-                {
-                    Text = path.Replace(savePath, "").Replace(".parkhaus", ""),
-                    AutoSize = true,
-                    AutoSizeMode = AutoSizeMode.GrowAndShrink
-                };
-
-                newButton.Click += (_, _) => Display(path);
-
-                fileContainer.Controls.Add(newButton);
+                NamedPath tmp = new NamedPath(path.Replace(savePath, "").Replace(".parkhaus", ""), path);
+                cbbxSaved.Items.Add(tmp);
             }
         }
 
-        private void Display(string path)
+        private void btnOpen_Click(object sender, EventArgs e)
         {
+            if(cbbxSaved.SelectedIndex == -1) return;
+
             Hide();
-            SimulationWindow display = new(path);
+            SimulationWindow display = new(((NamedPath)cbbxSaved.SelectedItem).Path);
             display.ShowDialog();
             Show();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if(cbbxSaved.SelectedIndex == -1) return;
+
+            if (MessageBox.Show($"Willst du das Parkhaus {((NamedPath)cbbxSaved.SelectedItem).Name} wirklich l�schen", "Achtung", MessageBoxButtons.YesNo) == DialogResult.No) return;
+        
+            string path = ((NamedPath)cbbxSaved.SelectedItem).Path;
+            cbbxSaved.Items.RemoveAt(cbbxSaved.SelectedIndex);
+
+            File.Delete(path);
+        }
+
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            if(cbbxSaved.SelectedIndex == -1) return;
+        }
+    
+        private class NamedPath
+        {
+            public string Path { get; set; }
+            public string Name { get; set; }
+
+            public NamedPath(string name, string path)
+            {
+                Name = name;
+                Path = path;
+            }
+
+            public string GetPath() => Path;
+
+            public override string ToString()
+            {
+                return Name;
+            }
+
         }
     }
 }
