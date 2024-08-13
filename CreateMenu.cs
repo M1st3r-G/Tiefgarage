@@ -13,6 +13,17 @@ namespace Tiefgarage
             AddLevel();
         }
 
+        public CreateMenu(string path)
+        {
+            InitializeComponent();
+            LoadFile(path);
+        }
+
+        private void LoadFile(string path) 
+        { 
+            
+        }
+
         private void btnAcceptCreate_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Das eingegeben Parkhaus kann nach dem erstellen nicht mehr geändert werden",

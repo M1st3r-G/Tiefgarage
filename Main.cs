@@ -41,7 +41,7 @@ namespace Tiefgarage
         {
             if(cbbxSaved.SelectedIndex == -1) return;
 
-            if (MessageBox.Show($"Willst du das Parkhaus {((NamedPath)cbbxSaved.SelectedItem).Name} wirklich lï¿½schen", "Achtung", MessageBoxButtons.YesNo) == DialogResult.No) return;
+            if (MessageBox.Show($"Willst du das Parkhaus {((NamedPath)cbbxSaved.SelectedItem).Name} wirklich löschen", "Achtung", MessageBoxButtons.YesNo) == DialogResult.No) return;
         
             string path = ((NamedPath)cbbxSaved.SelectedItem).Path;
             cbbxSaved.Items.RemoveAt(cbbxSaved.SelectedIndex);
@@ -53,6 +53,8 @@ namespace Tiefgarage
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if(cbbxSaved.SelectedIndex == -1) return;
+            CreateMenu createMenu = new(((NamedPath)cbbxSaved.SelectedItem).Path);
+            createMenu.ShowDialog();
         }
     
         private class NamedPath
