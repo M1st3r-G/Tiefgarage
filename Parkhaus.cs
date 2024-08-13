@@ -28,11 +28,15 @@ namespace Tiefgarage
         public bool FahrzeugHinzufuegen(Fahrzeug pFahrzeug)
         {
             if (pFahrzeug is null) return false;
-            if (pFahrzeug.GibParkhaus() == this) return false; // Nicht zweimal Reinfahren
-
-            if(!ErmittleFreienPlatz(pFahrzeug.GibTyp(), out Parkbucht? freierPlatz))
+            if (pFahrzeug.GibParkhaus() == this)
             {
-                Console.WriteLine($"Es ist kein Platz mehr im Parkhaus {this}");
+                SimulationWindow.OnConsolePrint?.Invoke($"Das Fahrzeug ist bereits im Parkhaus");
+                return false; // Nicht zweimal Reinfahren
+            }
+
+            if (!ErmittleFreienPlatz(pFahrzeug.GibTyp(), out Parkbucht? freierPlatz))
+            {
+                SimulationWindow.OnConsolePrint?.Invoke($"Es ist kein Platz mehr im Parkhaus {this}");
                 return false;
             }
 
@@ -47,11 +51,11 @@ namespace Tiefgarage
             if(GibPlatzVonFahrzeug(pFahrzeug, out Parkbucht? parkbucht, out _)) // gefunden
             {
                 parkbucht.EntferneFahrzeug();
-                pFahrzeug.ParkhausVerlassen();
+                //pFahrzeug.ParkhausVerlassen(); Not Neccessary, Car removes the Parkhouse and calls this
                 return;
             }
 
-            Console.WriteLine($"Fahrzeug {pFahrzeug} konnte das Parkhaus {this} nicht verlasse, es befand sich nie darin.");
+            SimulationWindow.OnConsolePrint?.Invoke($"Fahrzeug {pFahrzeug} konnte das Parkhaus {this} nicht verlasse, es befand sich nie darin.");
         }
 
         public bool GibPlatzVonFahrzeug(Fahrzeug pFahrzeug, out Parkbucht? parkbucht, out Point? position)
@@ -70,13 +74,13 @@ namespace Tiefgarage
             return false;
         }
 
-        public uint GibAnzahlPlaetze(bool mitBesetzten = false)
+        public uint GibAnzahlPlaetze(bool mitBesetzten = false, bool suchNachTyp = false, FahrzeugTyp typ = FahrzeugTyp.Auto)
         {
             uint sum = 0;
 
             foreach(Parketage etage in parketagen)
             {
-                sum += etage.GibAnzahlPlaetze(mitBesetzten);
+                sum += etage.GibAnzahlPlaetze(mitBesetzten, suchNachTyp, typ);
             }
 
             return sum;
@@ -96,6 +100,14 @@ namespace Tiefgarage
 
             parkbucht = null;
             return false;
+        }
+
+        public void Clear()
+        {
+            foreach (Parketage etage in parketagen)
+            {
+                etage.Clear();
+            }
         }
 
         public override string ToString() =>
@@ -160,10 +172,25 @@ namespace Tiefgarage
             return false;
         }
 
-        public uint GibAnzahlPlaetze(bool mitBesetzen = false)
+        public uint GibAnzahlPlaetze(bool mitBesetzen = false, bool suchNachTyp = false, FahrzeugTyp typ = FahrzeugTyp.Auto)
         {
-            if (mitBesetzen) return (uint) parkbuchten.Count;
-            return parkbuchten.Aggregate(0u, (c, bucht) => bucht.HatFreienPlatz(out _) ? c + 1 : c);
+            IEnumerable<Parkbucht> search = parkbuchten;
+            if (suchNachTyp)
+            {
+                search = parkbuchten.Where(b => b.GibTyp() == typ);
+            }
+                
+            if (mitBesetzen) return (uint) search.Count();
+            
+            return search.Aggregate(0u, (c, bucht) => bucht.HatFreienPlatz(out _) ? c + 1 : c);
+        }
+
+        public void Clear()
+        {
+            foreach (Parkbucht bucht in parkbuchten)
+            {
+                bucht.Clear();
+            }
         }
 
         public List<Parkbucht> GibParkbuchten() => parkbuchten;
@@ -199,6 +226,14 @@ namespace Tiefgarage
         {
             pFahrzeug = geparktesFahrzeug;
             return geparktesFahrzeug == null;
+        }
+
+        public void Clear()
+        {
+            if (geparktesFahrzeug == null) return;
+
+            geparktesFahrzeug.SetzeParkhaus(null);
+            geparktesFahrzeug = null;
         }
 
         public FahrzeugTyp GibTyp() => typ;

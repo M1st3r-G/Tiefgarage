@@ -45,6 +45,8 @@
             btnNavRight = new Button();
             btnNavLeft = new Button();
             lblIndex = new Label();
+            lblFreeSlots = new Label();
+            tbxOutput = new TextBox();
             grpInteract.SuspendLayout();
             SuspendLayout();
             // 
@@ -112,6 +114,7 @@
             btnClear.TabIndex = 6;
             btnClear.Text = "Parkhaus Leeren";
             btnClear.UseVisualStyleBackColor = true;
+            btnClear.Click += btnClear_Click;
             // 
             // grpInteract
             // 
@@ -165,6 +168,7 @@
             btnRemove.TabIndex = 2;
             btnRemove.Text = "Ausparken";
             btnRemove.UseVisualStyleBackColor = true;
+            btnRemove.Click += btnRemove_Click;
             // 
             // btnEnter
             // 
@@ -222,11 +226,30 @@
             lblIndex.TabIndex = 13;
             lblIndex.Text = "12/12";
             // 
+            // lblFreeSlots
+            // 
+            lblFreeSlots.AutoSize = true;
+            lblFreeSlots.Location = new Point(461, 356);
+            lblFreeSlots.Name = "lblFreeSlots";
+            lblFreeSlots.Size = new Size(38, 15);
+            lblFreeSlots.TabIndex = 14;
+            lblFreeSlots.Text = "label3";
+            // 
+            // tbxOutput
+            // 
+            tbxOutput.Location = new Point(624, 251);
+            tbxOutput.Multiline = true;
+            tbxOutput.Name = "tbxOutput";
+            tbxOutput.Size = new Size(164, 136);
+            tbxOutput.TabIndex = 15;
+            // 
             // SimulationWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 401);
+            Controls.Add(tbxOutput);
+            Controls.Add(lblFreeSlots);
             Controls.Add(lblIndex);
             Controls.Add(btnNavLeft);
             Controls.Add(btnNavRight);
@@ -265,5 +288,7 @@
         private Button btnNavRight;
         private Button btnNavLeft;
         private Label lblIndex;
+        private Label lblFreeSlots;
+        private TextBox tbxOutput;
     }
 }
