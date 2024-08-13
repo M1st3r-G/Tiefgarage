@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Diagnostics;
 
 namespace Tiefgarage
@@ -17,15 +16,16 @@ namespace Tiefgarage
             tbxTitle.Text = path.Replace(Main.savePath, "").Replace(".parkhaus", "");
             current = JsonConvert.DeserializeObject<Parkhaus>(File.ReadAllText(path))
                 ?? throw new NullReferenceException("Parkhaus konnte nicht gelesen werden");
-            SetDisplayToLevel(0);
+            currentLevel = 0;
+            ResetLevelDisplay();
             lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();
 
             OnConsolePrint += RefreshConsoleDisplay;
         }
 
-        public void SetDisplayToLevel(int index)
+        public void ResetLevelDisplay()
         {
-            Parketage etage = current.GibParketagen()[index];
+            Parketage etage = current.GibParketagen()[currentLevel];
 
             displayContainer.Controls.Clear();
 
@@ -35,7 +35,7 @@ namespace Tiefgarage
                 Parkbucht bucht = buchten[i];
                 Button newButton = new()
                 {
-                    Text = bucht.HatFreienPlatz(out Fahrzeug? f) ? $"Bucht {index + 1}-{i + 1}" : $"{f.GibId()}",
+                    Text = bucht.HatFreienPlatz(out Fahrzeug? f) ? $"Bucht {currentLevel + 1}-{i + 1}" : $"{f.GibId()}",
                     AutoSize = true,
                     BackColor = bucht.GibTyp() == FahrzeugTyp.Auto ? Color.DarkRed : Color.DarkBlue,
                     ForeColor = bucht.HatFreienPlatz(out _) ? Color.White : Color.Gray
@@ -56,7 +56,7 @@ namespace Tiefgarage
             if (currentLevel < 0) currentLevel = max - 1;
             if (currentLevel >= max) currentLevel = 0;
 
-            SetDisplayToLevel(currentLevel);
+            ResetLevelDisplay();
         }
 
         private void btnRandom_Click(object sender, EventArgs e)
@@ -72,7 +72,7 @@ namespace Tiefgarage
                 tmpCars[^1].ParkhausBefahren(current);
             }
 
-            SetDisplayToLevel(currentLevel);
+            ResetLevelDisplay();
             lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();
         }
 
@@ -131,7 +131,8 @@ namespace Tiefgarage
             tmp.ParkhausBefahren(current);
             if (current.GibPlatzVonFahrzeug(tmp, out Parkbucht? bucht, out Point? pos))
             {
-                SetDisplayToLevel(pos.Value.X);
+                currentLevel = pos.Value.X;
+                ResetLevelDisplay();
                 lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();
             }
             else OnConsolePrint?.Invoke("Auto konnte nicht einfahren.");
@@ -145,7 +146,7 @@ namespace Tiefgarage
 
             tmp.ParkhausVerlassen();
 
-            SetDisplayToLevel(currentLevel);
+            ResetLevelDisplay();
             lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();
         }
 
@@ -156,7 +157,8 @@ namespace Tiefgarage
 
             if (current.GibPlatzVonFahrzeug(tmp, out Parkbucht? bucht, out Point? pos))
             {
-                SetDisplayToLevel(pos.Value.X);
+                currentLevel = pos.Value.X;
+                ResetLevelDisplay();
                 displayContainer.Controls[pos.Value.Y].ForeColor = Color.Red;
 
                 OnConsolePrint?.Invoke($"Fahrzeug befindet sich auf Bucht {pos.Value.X + 1}-{pos.Value.Y + 1}");
@@ -167,7 +169,7 @@ namespace Tiefgarage
         private void btnClear_Click(object sender, EventArgs e)
         {
             current.Clear();
-            SetDisplayToLevel(currentLevel);
+            ResetLevelDisplay();
             lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();
         }
 
