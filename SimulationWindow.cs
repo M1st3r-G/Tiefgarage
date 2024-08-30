@@ -18,7 +18,11 @@ namespace Tiefgarage
                 ?? throw new NullReferenceException("Parkhaus konnte nicht gelesen werden")).ToParkhaus();
             currentLevel = 0;
             ResetLevelDisplay();
-            lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();
+
+            uint tmpA = current.GibAnzahlPlaetze(false, true, FahrzeugTyp.Auto);
+            uint tmpB = current.GibAnzahlPlaetze(false, true, FahrzeugTyp.Motorrad);
+
+            tbxFree.Text = $"{tmpA + tmpB} (A: {tmpA} | B: {tmpB}";
 
             OnConsolePrint += RefreshConsoleDisplay;
         }
@@ -73,7 +77,10 @@ namespace Tiefgarage
             }
 
             ResetLevelDisplay();
-            lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();
+            uint tmpA = current.GibAnzahlPlaetze(false, true, FahrzeugTyp.Auto);
+            uint tmpB = current.GibAnzahlPlaetze(false, true, FahrzeugTyp.Motorrad);
+
+            tbxFree.Text = $"{tmpA + tmpB} (A: {tmpA} | B: {tmpB}";
         }
 
         private void btnAddCar_Click(object sender, EventArgs e)
@@ -133,7 +140,10 @@ namespace Tiefgarage
             {
                 currentLevel = pos.Value.X;
                 ResetLevelDisplay();
-                lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();
+                uint tmpA = current.GibAnzahlPlaetze(false, true, FahrzeugTyp.Auto);
+                uint tmpB = current.GibAnzahlPlaetze(false, true, FahrzeugTyp.Motorrad);
+
+                tbxFree.Text = $"{tmpA + tmpB} (A: {tmpA} | B: {tmpB}";
             }
             else OnConsolePrint?.Invoke("Auto konnte nicht einfahren.");
         }
@@ -147,7 +157,10 @@ namespace Tiefgarage
             tmp.ParkhausVerlassen();
 
             ResetLevelDisplay();
-            lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();
+            uint tmpA = current.GibAnzahlPlaetze(false, true, FahrzeugTyp.Auto);
+            uint tmpB = current.GibAnzahlPlaetze(false, true, FahrzeugTyp.Motorrad);
+
+            tbxFree.Text = $"{tmpA + tmpB} (A: {tmpA} | B: {tmpB}";
         }
 
         private void btnFind_Click(object sender, EventArgs e)
@@ -164,13 +177,16 @@ namespace Tiefgarage
                 OnConsolePrint?.Invoke($"Fahrzeug befindet sich auf Bucht {pos.Value.X + 1}-{pos.Value.Y + 1}");
             }
             else OnConsolePrint?.Invoke("Fahrzeug konnte nicht gefunden werden.");
-        }   
+        }
 
         private void btnClear_Click(object sender, EventArgs e)
         {
             current.Clear();
             ResetLevelDisplay();
-            lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();
+            uint tmpA = current.GibAnzahlPlaetze(false, true, FahrzeugTyp.Auto);
+            uint tmpB = current.GibAnzahlPlaetze(false, true, FahrzeugTyp.Motorrad);
+
+            tbxFree.Text = $"{tmpA + tmpB} (A: {tmpA} | B: {tmpB}";
         }
 
         private void RefreshConsoleDisplay(string msg)

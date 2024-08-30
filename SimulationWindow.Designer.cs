@@ -45,8 +45,9 @@
             btnNavRight = new Button();
             btnNavLeft = new Button();
             lblIndex = new Label();
-            lblFreeSlots = new Label();
             tbxOutput = new TextBox();
+            label3 = new Label();
+            tbxFree = new TextBox();
             grpInteract.SuspendLayout();
             SuspendLayout();
             // 
@@ -226,15 +227,6 @@
             lblIndex.TabIndex = 13;
             lblIndex.Text = "12/12";
             // 
-            // lblFreeSlots
-            // 
-            lblFreeSlots.AutoSize = true;
-            lblFreeSlots.Location = new Point(461, 356);
-            lblFreeSlots.Name = "lblFreeSlots";
-            lblFreeSlots.Size = new Size(38, 15);
-            lblFreeSlots.TabIndex = 14;
-            lblFreeSlots.Text = "label3";
-            // 
             // tbxOutput
             // 
             tbxOutput.Location = new Point(624, 251);
@@ -243,13 +235,31 @@
             tbxOutput.Size = new Size(164, 136);
             tbxOutput.TabIndex = 15;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(456, 345);
+            label3.Name = "label3";
+            label3.Size = new Size(66, 15);
+            label3.TabIndex = 16;
+            label3.Text = "Freie Plätze";
+            // 
+            // tbxFree
+            // 
+            tbxFree.Location = new Point(477, 363);
+            tbxFree.Name = "tbxFree";
+            tbxFree.ReadOnly = true;
+            tbxFree.Size = new Size(120, 23);
+            tbxFree.TabIndex = 17;
+            // 
             // SimulationWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 401);
+            Controls.Add(tbxFree);
+            Controls.Add(label3);
             Controls.Add(tbxOutput);
-            Controls.Add(lblFreeSlots);
             Controls.Add(lblIndex);
             Controls.Add(btnNavLeft);
             Controls.Add(btnNavRight);
@@ -288,7 +298,8 @@
         private Button btnNavRight;
         private Button btnNavLeft;
         private Label lblIndex;
-        private Label lblFreeSlots;
         private TextBox tbxOutput;
+        private Label label3;
+        private TextBox tbxFree;
     }
 }
