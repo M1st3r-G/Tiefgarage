@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace Tiefgarage
 {
@@ -6,6 +7,7 @@ namespace Tiefgarage
     {
         private readonly List<LevelGeneratorUI> Etagen = new();
         private bool allowClose = false;
+        private bool skipCheck = false;
 
         public CreateMenu()
         {
@@ -17,24 +19,34 @@ namespace Tiefgarage
         {
             InitializeComponent();
             LoadFile(path);
+            skipCheck = true;
         }
 
         private void LoadFile(string path) 
         { 
-            
+            SaveObject tmp = JsonConvert.DeserializeObject<SaveObject>(File.ReadAllText(path));
+            foreach (SaveObject.TypenUndAnzahlenProEtage etage in tmp.etagen)
+            {
+                AddLevel();
+                Etagen[^1].SetTypUndAnzahlen(etage);
+            }
+
+            tbxName.Text = path.Replace(Main.savePath, "").Replace(".parkhaus", "");
         }
 
         private void btnAcceptCreate_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Das eingegeben Parkhaus kann nach dem erstellen nicht mehr geändert werden",
-                                "Sind sie sich sicher?", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
+            if (MessageBox.Show("Sie müssen das Parkhaus erneut öffnen, um es zu bearbeiten.", "Sind sie sich sicher?", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
 
             string fileName = (tbxName.Text is "" ? "Unbenanntes Parkhaus" : tbxName.Text);
 
-            if (File.Exists(Main.savePath + fileName + ".parkhaus"))
+            if(!skipCheck)
             {
-                if (MessageBox.Show($"Es existiert bereits ein Parkhaus mit dem Namen: {fileName}\nWillst du es überschreiben?",
-                    "Achtung", MessageBoxButtons.YesNo) == DialogResult.No) return;
+                if (File.Exists(Main.savePath + fileName + ".parkhaus"))
+                {
+                    if (MessageBox.Show($"Es existiert bereits ein Parkhaus mit dem Namen: {fileName}\nWillst du es überschreiben?",
+                        "Achtung", MessageBoxButtons.YesNo) == DialogResult.No) return;
+                }
             }
 
             List<List<Tuple<uint, FahrzeugTyp>>> fuerJedeEtage = new();
@@ -46,8 +58,20 @@ namespace Tiefgarage
 
             Parkhaus meinParkhaus = new(fuerJedeEtage);
 
-            File.WriteAllText(Main.savePath + fileName + ".parkhaus", JsonConvert.SerializeObject(meinParkhaus, Formatting.Indented));
-            MessageBox.Show($"Es wurde erfolgreich ein {meinParkhaus} erstellt.", "Erfolg", MessageBoxButtons.OK);
+            SaveObject toSave = meinParkhaus.GetSaveObject();
+
+            File.WriteAllText(Main.savePath + fileName + ".parkhaus",
+                JsonConvert.SerializeObject(toSave, Formatting.Indented));
+            
+            if(skipCheck)
+            {
+                MessageBox.Show($"Das Parkhaus {meinParkhaus} wurde erfolgreich bearbeitet", "Erfolg", MessageBoxButtons.OK);
+            }   
+            else
+            {
+                MessageBox.Show($"Es wurde erfolgreich ein {meinParkhaus} erstellt.", "Erfolg", MessageBoxButtons.OK);
+            }
+
             allowClose = true;
             Close();
         }
@@ -100,6 +124,17 @@ namespace Tiefgarage
             container.Controls.Add(group);
         }
 
+        public void SetTypUndAnzahlen(SaveObject.TypenUndAnzahlenProEtage tUndA)
+        {
+            rows[0].SetTA(tUndA.typUndAnzahl[0]);
+
+            for(int i = 1; i < tUndA.typUndAnzahl.Count; i++)
+            {
+                AddRow();
+                rows[i].SetTA(tUndA.typUndAnzahl[i]);
+            }
+        }
+
         public void AddRow()
         {
             if (rows.Count == 1) button.Enabled = false;
@@ -140,6 +175,12 @@ namespace Tiefgarage
 
                 group.Controls.Add(number);
                 group.Controls.Add(dropdown);
+            }
+
+            public void SetTA(SaveObject.TypenUndAnzahlenProEtage.TA pTA)
+            {
+                dropdown.SelectedItem = pTA.typ;
+                number.Value = pTA.anzahl;
             }
 
             public Tuple<uint, FahrzeugTyp> GetData() =>

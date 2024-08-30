@@ -14,8 +14,8 @@ namespace Tiefgarage
         {
             InitializeComponent();
             tbxTitle.Text = path.Replace(Main.savePath, "").Replace(".parkhaus", "");
-            current = JsonConvert.DeserializeObject<Parkhaus>(File.ReadAllText(path))
-                ?? throw new NullReferenceException("Parkhaus konnte nicht gelesen werden");
+            current = (JsonConvert.DeserializeObject<SaveObject>(File.ReadAllText(path))
+                ?? throw new NullReferenceException("Parkhaus konnte nicht gelesen werden")).ToParkhaus();
             currentLevel = 0;
             ResetLevelDisplay();
             lblFreeSlots.Text = current.GibAnzahlPlaetze().ToString();

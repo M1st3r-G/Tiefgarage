@@ -55,6 +55,7 @@ namespace Tiefgarage
             if(cbbxSaved.SelectedIndex == -1) return;
             CreateMenu createMenu = new(((NamedPath)cbbxSaved.SelectedItem).Path);
             createMenu.ShowDialog();
+            RefreshList();
         }
     
         private class NamedPath

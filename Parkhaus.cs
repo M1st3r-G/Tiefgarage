@@ -1,16 +1,11 @@
 ﻿using Newtonsoft.Json;
+using static Tiefgarage.SaveObject;
 
 namespace Tiefgarage
 {
     public class Parkhaus
     {
-        [JsonProperty] private List<Parketage> parketagen;
-
-        [JsonConstructor]
-        public Parkhaus(List<Parketage> pParketagen)
-        {
-            parketagen = pParketagen;
-        }
+        private List<Parketage> parketagen;
 
         public Parkhaus(List<List<Tuple<uint, FahrzeugTyp>>> anzahlenUndTypenProEtage) 
         {
@@ -25,6 +20,17 @@ namespace Tiefgarage
             }
         }
         
+        public SaveObject GetSaveObject()
+        {
+            SaveObject tmp = new();
+            foreach (Parketage etage in parketagen) 
+            {
+                tmp.AddTypUndAnzahl(etage.GetTypUndAnzahl());
+            }
+
+            return tmp;
+        }
+
         public bool FahrzeugHinzufuegen(Fahrzeug pFahrzeug)
         {
             if (pFahrzeug is null) return false;
@@ -122,6 +128,18 @@ namespace Tiefgarage
         public Parketage(List<Parkbucht> pParkbuchten)
         {
             parkbuchten = pParkbuchten;
+        }
+
+        public TypenUndAnzahlenProEtage GetTypUndAnzahl()
+        {
+            TypenUndAnzahlenProEtage tmp = new();
+
+            foreach (FahrzeugTyp type in parkbuchten.DistinctBy(b => b.GibTyp()).Select(b => b.GibTyp()))
+            {
+                tmp.AddTA(type, parkbuchten.Count(b => b.GibTyp() == type));
+            }
+            
+            return tmp;
         }
 
         public Parketage(List<Tuple<uint, FahrzeugTyp>> anzahlenUndTypen)

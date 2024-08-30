@@ -1,6 +1,4 @@
-﻿using System.DirectoryServices.ActiveDirectory;
-
-namespace Tiefgarage
+﻿namespace Tiefgarage
 {
     public static class FahrzeugUtils
     {
@@ -41,11 +39,63 @@ namespace Tiefgarage
         }
     }
 
-    
-
     public enum FahrzeugTyp
     {
         Auto,
         Motorrad
+    }
+
+    public class SaveObject
+    {
+        public List<TypenUndAnzahlenProEtage>? etagen;
+
+        public SaveObject() { }
+
+        public void AddTypUndAnzahl(TypenUndAnzahlenProEtage pTypUndAnzahl)
+        {
+            etagen ??= new();
+            etagen.Add(pTypUndAnzahl);
+        }
+
+        public Parkhaus ToParkhaus()
+        {
+            List<List<Tuple<uint, FahrzeugTyp>>> fuerJedeEtage = new();
+
+            foreach (TypenUndAnzahlenProEtage proEtage in etagen)
+            {
+                List<Tuple<uint, FahrzeugTyp>> tmp = new();
+                foreach(var ka in proEtage.typUndAnzahl)
+                {
+                    tmp.Add(new Tuple<uint, FahrzeugTyp>((uint)ka.anzahl, ka.typ));
+                }
+
+                fuerJedeEtage.Add(tmp);
+            }
+
+            return new(fuerJedeEtage);
+        }
+
+        public class TypenUndAnzahlenProEtage
+        {
+            public List<TA> typUndAnzahl;
+
+            public void AddTA(FahrzeugTyp pTyp, int pAnazahl)
+            {
+                typUndAnzahl ??= new List<TA>();
+                typUndAnzahl.Add(new TA(pTyp, pAnazahl));
+            }
+
+            public struct TA
+            {
+                public FahrzeugTyp typ;
+                public int anzahl;
+
+                public TA(FahrzeugTyp pTyp, int pAnazahl)
+                {
+                    typ = pTyp;
+                    anzahl = pAnazahl;
+                }
+            }
+        }
     }
 }
